@@ -85,6 +85,7 @@ def login():
     if not student or not check_password_hash(student.password_hash, password):
         return jsonify({'error': 'Invalid credentials'}), 401
     session['user'] = str(student.id)
+    print("session details saved")
     return jsonify({'message': 'Login successful', 'user_id': str(student.id), 'name': student.name}), 200
 
 @auth_bp.route('/logout', methods=['POST'])

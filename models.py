@@ -39,6 +39,7 @@ class College(Base):
     name = Column(String(120), nullable=False)
     address = Column(Text)
     logo_url = Column(Text)
+<<<<<<< Updated upstream
     students = relationship("Student", back_populates="college")
     faculty = relationship("Faculty", back_populates="college")
 
@@ -92,6 +93,9 @@ class Attendance(Base):
     # Relationships
     student = relationship("Student", back_populates="attendances")
     subject = relationship("Subject", backref="attendances")
+=======
+    password_hash = Column(Text, nullable=True)  # For college login
+>>>>>>> Stashed changes
 
 class Student(Base):
     __tablename__ = 'students'

@@ -43,3 +43,33 @@ def add_achievement():
         db.add(achievement)
         db.commit()
         return jsonify({'message': 'Achievement added', 'achievement_id': str(achievement.id)}), 201
+
+
+@achievements_bp.route('/achievements', methods=['GET'])
+def get_achievements():
+    student_id = request.args.get('student_id')
+    if not student_id:
+        return jsonify({'error': 'Missing student_id'}), 400
+
+    with Session(engine) as db:
+        achievements = db.query(Achievement).filter_by(student_id=student_id).all()
+        print(achievements)
+        result = []
+        for ach in achievements:
+            result.append({
+                'id': str(ach.id),
+                'type': ach.type,
+                'title': ach.title,
+                'description': ach.description,
+                'date': ach.date.isoformat(),
+                'end_date': ach.end_date.isoformat() if ach.end_date else None,
+                'venue': ach.venue,
+                'organization': ach.organization,
+                'certification_url': ach.certification_url,
+                'media_url': ach.media_url,
+                'status': ach.status,
+                'verification_date': ach.verification_date.isoformat() if ach.verification_date else None,
+                'verified_by': str(ach.verified_by) if ach.verified_by else None,
+                'remarks': ach.remarks
+            })
+        return jsonify(result), 200

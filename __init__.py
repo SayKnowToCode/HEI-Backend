@@ -5,6 +5,7 @@ from dashboard.routes import dashboard_bp
 import os
 from college.routes import college_bp
 from college.auth import college_auth_bp
+from achievements.routes import achievements_bp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
@@ -15,6 +16,7 @@ app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(dashboard_bp, url_prefix='/api')
 app.register_blueprint(college_bp, url_prefix='/api/college')
 app.register_blueprint(college_auth_bp, url_prefix='/api/college')
+app.register_blueprint(achievements_bp, url_prefix='/api')
 
 # Check for valid database URL
 DATABASE_URL = os.environ.get("DATABASE_URL")

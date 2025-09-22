@@ -1,19 +1,19 @@
-from flask import Blueprint, jsonify, session
+from flask import Blueprint, jsonify, request
 from datetime import datetime, timedelta
 from sqlalchemy import func, and_, case
-from db import SessionLocal
+from db import engine
+from sqlalchemy.orm import Session
 from models import Student, College, Achievement, Attendance, Subject, StudentSubject
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
 @dashboard_bp.route('/dashboard', methods=['GET'])
 def get_dashboard():
-    user_id = session.get('user')
-    user_id = "a31e083b-a933-4f60-b28b-3162e71ef3b1"  # TODO: Remove this hardcoded value in production
+    user_id = request.args.get('user_id')
     if not user_id:
-        return jsonify({'error': 'Unauthorized'}), 401
+        return jsonify({'error': 'Missing user_id'}), 400
     
-    db = SessionLocal()
+    db = Session(engine)
     try:
         # Get student and college info
         student = db.query(Student).filter_by(id=user_id).first()

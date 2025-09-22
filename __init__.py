@@ -2,12 +2,9 @@ from flask import Flask
 from flask_cors import CORS
 from auth.routes import auth_bp
 from dashboard.routes import dashboard_bp
-<<<<<<< Updated upstream
 import os
-=======
 from college.routes import college_bp
 from college.auth import college_auth_bp
->>>>>>> Stashed changes
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'

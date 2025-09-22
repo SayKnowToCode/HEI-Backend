@@ -1,5 +1,7 @@
+from db import engine
 
-from db import engine, SessionLocal
+from db import engine
+from sqlalchemy.orm import Session
 from models import Base, College
 import uuid
 
@@ -12,19 +14,19 @@ def reset_database():
     print("All tables created.")
 
 def seed_college():
-    session = SessionLocal()
-    # Use a fixed UUID for the college
-    college_id = uuid.UUID("11111111-1111-1111-1111-111111111111")
-    college = College(
-        id=college_id,
-        name="Sardar Patel Institute of Technology",
-        address="Munshi Nagar, Andheri (West), Mumbai, Maharashtra 400058",
-        logo_url=None
-    )
-    session.add(college)
-    session.commit()
-    print(f"College added: {college.name} with id {college.id}")
-    session.close()
+    from sqlalchemy.orm import Session
+    with Session(engine) as session:
+        # Use a fixed UUID for the college
+        college_id = uuid.UUID("11111111-1111-1111-1111-111111111111")
+        college = College(
+            id=college_id,
+            name="Sardar Patel Institute of Technology",
+            address="Munshi Nagar, Andheri (West), Mumbai, Maharashtra 400058",
+            logo_url=None
+        )
+        session.add(college)
+        session.commit()
+        print(f"College added: {college.name} with id {college.id}")
 
 if __name__ == "__main__":
     reset_database()

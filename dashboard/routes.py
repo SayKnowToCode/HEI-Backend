@@ -83,16 +83,23 @@ def get_dashboard():
             'remarks': record.remarks
         } for record in recent_records]
         
-        # Get achievements
+        # Get achievements (all types)
         achievements = db.query(Achievement).filter_by(student_id=user_id).order_by(Achievement.date.desc()).all()
         achievements_list = [{
+            'id': str(a.id),
             'type': a.type,
             'title': a.title,
-            'date': a.date.strftime('%b %Y'),
+            'description': a.description,
+            'date': a.date.strftime('%Y-%m-%d'),
+            'end_date': a.end_date.strftime('%Y-%m-%d') if a.end_date else None,
             'status': a.status,
+            'venue': a.venue,
             'organization': a.organization,
             'certification_url': a.certification_url,
-            'media_url': a.media_url
+            'media_url': a.media_url,
+            'verification_date': a.verification_date.strftime('%Y-%m-%d') if a.verification_date else None,
+            'verified_by': str(a.verified_by) if a.verified_by else None,
+            'remarks': a.remarks
         } for a in achievements]
         
         dashboard_data = {

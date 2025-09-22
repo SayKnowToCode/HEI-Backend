@@ -17,32 +17,11 @@ def register():
     name = data.get('name')
     enrollment_number = data.get('enrollment_number')
     college_name = data.get('college_name')
-    profile_image_url = data.get('profile_image_url')
-    year = data.get('year')
-    branch = data.get('branch')
-    # Activities: conferences, certifications, clubs, competitions, leadership, community
-    activity_keys = ['conferences', 'certifications', 'clubs', 'competitions', 'leadership', 'community']
-    activities_payload = []
-    for key in activity_keys:
-        entries = data.get(key, [])
-        if isinstance(entries, list):
-            for entry in entries:
-                # entry can be {name, date, venue, media_url} or {name, date, venue, media}
-                activity = {
-                    'name': entry.get('name', '') if isinstance(entry, dict) else str(entry),
-                    'type': key.capitalize(),
-                    'media_url': entry.get('media_url') if isinstance(entry, dict) and entry.get('media_url') else None,
-                    'date': entry.get('date') if isinstance(entry, dict) and entry.get('date') else None,
-                    'venue': entry.get('venue') if isinstance(entry, dict) and entry.get('venue') else None,
-                }
-                activities_payload.append(activity)
-
     if not email or not password or not name or not enrollment_number or not college_name:
         return jsonify({'error': 'Missing required fields'}), 400
     from sqlalchemy.orm import Session
     with Session(engine) as db:
         try:
-            # Find college by name
             college = db.query(College).filter(College.name == college_name).first()
             if not college:
                 return jsonify({'error': 'College not found'}), 404
@@ -51,24 +30,9 @@ def register():
                 password_hash=generate_password_hash(password),
                 name=name,
                 enrollment_number=enrollment_number,
-                college_id=college.id,
-                profile_image_url=profile_image_url,
-                year=year,
-                branch=branch
+                college_id=college.id
             )
             db.add(student)
-            db.flush()  # Get student.id before commit
-            # Save activities
-            for act in activities_payload:
-                activity = Activity(
-                    student_id=student.id,
-                    name=act['name'],
-                    type=act['type'],
-                    media_url=act['media_url'],
-                    date=act['date'],
-                    venue=act['venue']
-                )
-                db.add(activity)
             db.commit()
             return jsonify({'message': 'User registered successfully'}), 201
         except IntegrityError:

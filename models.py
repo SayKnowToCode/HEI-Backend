@@ -93,7 +93,6 @@ class Attendance(Base):
     # Relationships
     student = relationship("Student", back_populates="attendances")
     subject = relationship("Subject", backref="attendances")
-    password_hash = Column(Text, nullable=True)  # For college login
 
 class Student(Base):
     __tablename__ = 'students'
